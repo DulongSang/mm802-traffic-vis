@@ -1,14 +1,27 @@
 import React from 'react';
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
-import { Root } from './routes/Root';
+import { MapView } from './routes/MapView';
+import { Welcome } from './routes/Welcome';
 
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Root />,
+    element: <Welcome />,
   },
+  {
+    path: "/map-view",
+    element: <MapView />,
+  },
+  {
+    path: "/dashboard",
+    element: <h1>TODO: Dashboard</h1>,
+  },
+  {
+    path: "/intersection/:id",
+    element: <h1>TODO: Intersection</h1>,
+  }
 ]);
 
 function App() {
