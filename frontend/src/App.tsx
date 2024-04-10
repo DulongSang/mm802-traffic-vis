@@ -1,6 +1,7 @@
 import React from 'react';
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
+import { Dashboard } from './routes/Dashboard';
 import { MapView } from './routes/MapView';
 import { Welcome } from './routes/Welcome';
 
@@ -16,12 +17,16 @@ const router = createBrowserRouter([
   },
   {
     path: "/dashboard",
-    element: <h1>TODO: Dashboard</h1>,
+    element: <Dashboard />,
   },
   {
-    path: "/intersection/:id",
-    element: <h1>TODO: Intersection</h1>,
-  }
+    path: "/intersection/camera/:id",
+    element: <h1>TODO: Intersection Camera Page</h1>,
+  },
+  {
+    path: "/intersection/dashboard/:id",
+    element: <h1>TODO: Intersection Dashboard Page</h1>,
+  },
 ]);
 
 function App() {

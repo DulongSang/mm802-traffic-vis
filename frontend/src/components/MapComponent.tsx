@@ -39,7 +39,7 @@ export function MapComponent(props: MapProps) {
     });
     select.on('select', (event) => {
       const feature = event.selected[0];
-      window.location.href = `/intersection/${feature.get('id')}`
+      window.location.href = `/intersection/camera/${feature.get('id')}`
     });
 
     const edmontonCoords = fromLonLat([-113.4938, 53.5461]);
