@@ -55,11 +55,5 @@ git push -f
 
 # Reference
 
-## Packages
-
-- [typescript](https://github.com/microsoft/TypeScript)
-- [react](https://github.com/facebook/react)
-- [react-scripts](https://github.com/facebook/create-react-app)
-- [d3](https://github.com/d3/d3)
-- [material-ui](https://github.com/mui/material-ui)
-- [creativetimofficial/material-dashboard-react](https://github.com/creativetimofficial/material-dashboard-react?tab=readme-ov-file)
+## Dataset
+- [Traffic Disruptions - Edmonton's Open Data Portal](https://data.edmonton.ca/Transportation/Traffic-Disruptions/k4tx-5k8p/data_preview)
