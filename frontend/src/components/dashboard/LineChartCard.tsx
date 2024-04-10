@@ -4,7 +4,7 @@ import { Update as UpdateIcon } from '@mui/icons-material';
 import { LineChart } from '@mui/x-charts/LineChart';
 
 export function LineChartCard(props: LineChartCardProps) {
-  const { series, xAxis, title, colors, chartBackgroundColor } = props;
+  const { series, xAxis, title, colors, chartBackgroundColor, chartHeight } = props;
 
   const [period, setPeriod] = useState("last 24 hour");
 
@@ -14,7 +14,7 @@ export function LineChartCard(props: LineChartCardProps) {
         <LineChart
           series={series}
           xAxis={xAxis}
-          height={400}
+          height={chartHeight ?? 400}
           colors={colors}
           grid={{ horizontal: true }}
         />
@@ -50,10 +50,11 @@ export type LineChartCardProps = {
     label?: string,
   }[],
   xAxis: {
-    data: number[],
+    data: number[] | string[],
     scaleType?: 'point'
   }[],
   title: string,
   colors?: string[],
   chartBackgroundColor?: string,
+  chartHeight?: number,
 };
