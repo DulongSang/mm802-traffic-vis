@@ -2,6 +2,7 @@ import React from 'react';
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 import { Dashboard } from './routes/Dashboard';
+import { IntersectionCamera } from './routes/IntersectionCamera';
 import { MapView } from './routes/MapView';
 import { Welcome } from './routes/Welcome';
 
@@ -21,7 +22,7 @@ const router = createBrowserRouter([
   },
   {
     path: "/intersection/camera/:id",
-    element: <h1>TODO: Intersection Camera Page</h1>,
+    element: <IntersectionCamera />,
   },
   {
     path: "/intersection/dashboard/:id",

@@ -3,6 +3,7 @@
 ## Group members
 - Dulong Sang: dulong
 - Mingwei Lu: mlu1
+- Jenil Haresh Kanani: jenilhar
 
 
 ## Front-end

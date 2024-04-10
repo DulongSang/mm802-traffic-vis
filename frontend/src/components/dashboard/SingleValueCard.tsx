@@ -56,6 +56,7 @@ export function SingleValueCard(props: SingleValueCardProps) {
               label="Period"
               onChange={(event) => {
                 setPeriod(event.target.value);
+                setCurValue(Math.floor(Math.random() * 100));
                 setPercentage(Math.floor(Math.random() * 40) - 20);
               }}
             >
