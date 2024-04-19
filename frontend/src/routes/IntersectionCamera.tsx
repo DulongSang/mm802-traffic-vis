@@ -5,6 +5,7 @@ import {
   ArrowBackIosNew as BackIcon,
   Dashboard as DashboardIcon,
   DirectionsCar as CarIcon,
+  Speed as SpeedIcon,
   Traffic as TrafficIcon,
   Videocam as VideocamIcon,
 } from '@mui/icons-material';
@@ -22,7 +23,10 @@ import mockTopDownView from '../assets/intersection-topdown-view.png'
 import { SidebarComponent, SidebarItem } from '../components/SidebarComponent';
 import { SingleValueCard } from '../components/dashboard/SingleValueCard';
 import { LineChartCard } from '../components/dashboard/LineChartCard';
-import { getVehicleCount, getTrafficIndex, getVehicleCountTrend, getTrafficIndexTrend } from '../api/IntersectionApi';
+import { 
+  getVehicleCount, getTrafficIndex, getAverageSpeed,
+  getVehicleCountTrend, getTrafficIndexTrend, getAverageSpeedTrend,
+} from '../api/IntersectionApi';
 import { getCameraInfo } from '../api/MapApi';
 
 export function IntersectionCamera() {
@@ -107,7 +111,7 @@ function MiniDashboard() {
   const { id } = useParams<{ id: string }>();
 
   return (
-    <Grid container columns={2} spacing={2} style={{ marginTop: '12px', paddingRight: '12px' }}>
+    <Grid container columns={3} spacing={2} style={{ marginTop: '12px', paddingRight: '12px' }}>
       <Grid item xs={1}>
         <SingleValueCard
           title="Vehicle Count" icon={<CarIcon fontSize='large' />} iconColor='white' iconBackgroundColor='#1976d2'
@@ -121,15 +125,28 @@ function MiniDashboard() {
         />
       </Grid>
       <Grid item xs={1}>
+        <SingleValueCard
+          title="Average Speed" icon={<SpeedIcon fontSize='large' />} iconColor='white' iconBackgroundColor='#00e394'
+          fetchValue={(datetime: Date) => getAverageSpeed(id!, datetime)} autoUpdateMs={60000}
+        />
+      </Grid>
+      
+      <Grid item xs={1}>
         <LineChartCard 
-          title="Vehicle Count" chartHeight={170} colors={['#1976d2']} chartBackgroundColor='#cce6ff'
+          title="Vehicle Count Trend" chartHeight={170} colors={['#1976d2']} chartBackgroundColor='#cce6ff'
           fetchData={(period) => getVehicleCountTrend(id!, period)}
         />
       </Grid>
       <Grid item xs={1}>
         <LineChartCard
-          title="Traffic Index" chartHeight={170} colors={['#4bd400']} chartBackgroundColor='#d9ffe0'
+          title="Traffic Index Trend" chartHeight={170} colors={['#4bd400']} chartBackgroundColor='#d9ffe0'
           fetchData={(period) => getTrafficIndexTrend(id!, period)}
+        />
+      </Grid>
+      <Grid item xs={1}>
+        <LineChartCard
+          title="Average Speed Trend" chartHeight={170} colors={['#00e394']} chartBackgroundColor='#bdffe8'
+          fetchData={(period) => getAverageSpeedTrend(id!, period)}
         />
       </Grid>
     </Grid>

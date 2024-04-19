@@ -3,6 +3,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 import { Dashboard } from './routes/Dashboard';
 import { IntersectionCamera } from './routes/IntersectionCamera';
+import { IntersectionDashboard } from './routes/IntersectionDashboard';
 import { MapView } from './routes/MapView';
 
 
@@ -25,7 +26,7 @@ const router = createBrowserRouter([
   },
   {
     path: "/intersection/dashboard/:id",
-    element: <h1>TODO: Intersection Dashboard Page</h1>,
+    element: <IntersectionDashboard />,
   },
 ]);
 

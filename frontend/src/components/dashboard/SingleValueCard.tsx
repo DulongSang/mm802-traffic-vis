@@ -11,7 +11,7 @@ const PERIOD_TO_MS = {
 };
 
 export function SingleValueCard(props: SingleValueCardProps) {
-  const { title, icon, iconColor, iconBackgroundColor, autoUpdateMs, fetchValue } = props;
+  const { title, icon, iconColor, iconBackgroundColor, autoUpdateMs, fetchValue, noUpdate } = props;
 
   const [curValue, setCurValue] = useState<number>(0);
   const [prevValue, setPrevValue] = useState<number>(0);
@@ -20,7 +20,7 @@ export function SingleValueCard(props: SingleValueCardProps) {
 
   // Auto update
   useEffect(() => {
-    if (autoUpdateMs <= 0) {
+    if (!autoUpdateMs) {
       return;
     }
     
@@ -33,7 +33,13 @@ export function SingleValueCard(props: SingleValueCardProps) {
     return () => clearInterval(interval);
   }, []);
 
+  // Initial fetch
   useEffect(() => {
+    fetchValue(new Date()).then((value) => {
+      setCurValue(value);
+      setDeltaPercentage(((value - prevValue) / prevValue) * 100);
+    });
+
     fetchValue(new Date(Date.now() - PERIOD_TO_MS[period])).then((value) => {
       setPrevValue(value);
       setDeltaPercentage(((curValue - value) / value) * 100);
@@ -63,27 +69,31 @@ export function SingleValueCard(props: SingleValueCardProps) {
           </div>
         </div>
       </div>
-      <Divider style={{ marginTop: '12px' }} />
-      <div style={{ display: 'flex', justifyContent: 'space-between', padding: '10px' }}>
-        <div style={{ display: 'flex', alignItems: 'center' }}>
-          <span style={{ color: deltaPercentage > 0 ? 'green' : 'red', fontWeight: 'bold' }}>
-            {deltaPercentage > 0 ? `+${deltaPercentage}` : deltaPercentage}%
-          </span>
-          <span style={{ margin: '0 8px' }}>than</span>
-          <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
-            <InputLabel>Period</InputLabel>
-            <Select
-              value={period}
-              label="Period"
-              onChange={(event) => setPeriod(event.target.value as keyof typeof PERIOD_TO_MS)}
-            >
-              {Object.keys(PERIOD_TO_MS).map((period) => (
-                <MenuItem key={period} value={period}>{period}</MenuItem>
-              ))}
-            </Select>
-          </FormControl>
+      {noUpdate ? <div style={{ height: '50px' }}></div> : (
+        <>
+        <Divider style={{ marginTop: '12px' }} />
+        <div style={{ display: 'flex', justifyContent: 'space-between', padding: '10px' }}>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <span style={{ color: deltaPercentage > 0 ? 'green' : 'red', fontWeight: 'bold' }}>
+              {deltaPercentage > 0 ? `+${deltaPercentage}` : deltaPercentage}%
+            </span>
+            <span style={{ margin: '0 8px' }}>than</span>
+            <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
+              <InputLabel>Period</InputLabel>
+              <Select
+                value={period}
+                label="Period"
+                onChange={(event) => setPeriod(event.target.value as keyof typeof PERIOD_TO_MS)}
+              >
+                {Object.keys(PERIOD_TO_MS).map((period) => (
+                  <MenuItem key={period} value={period}>{period}</MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </div>
         </div>
-      </div>
+        </>
+      )}
     </Paper>
   );
 }
@@ -93,6 +103,7 @@ export type SingleValueCardProps = {
   icon: JSX.Element,
   iconColor: string,
   iconBackgroundColor: string,
-  autoUpdateMs: number,
   fetchValue: (datetime: Date) => Promise<number>,
-};
+  autoUpdateMs?: number,
+  noUpdate?: boolean,
+}

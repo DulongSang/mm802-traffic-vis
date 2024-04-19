@@ -1,6 +1,7 @@
 import axios from 'axios';
 
 import { BACKEND_BASE_URL } from "../config";
+import { BarChartData } from '../components/dashboard/BarChartCard';
 import { LineChartData } from "../components/dashboard/LineChartCard";
 
 export function getTrafficIndex(datetime: Date): Promise<number> {
@@ -38,10 +39,15 @@ export async function getTrafficIndexTrend(period: string): Promise<LineChartDat
     // return axios.get(`${BACKEND_BASE_URL}/traffic-index-trend?period=${period}`);
 }
 
-export function getTotalDisruptionTrend(period: string): Promise<LineChartData> {
-    const mockValue = generateMockTrend();
-    return Promise.resolve(mockValue);
-    // return axios.get(`${BACKEND_BASE_URL}/total-disruption-trend?period=${period}`);
+export async function getDisruptionImpactDistribution(): Promise<BarChartData> {
+    const mockData: BarChartData = {
+        series: [
+            { data: Array.from({ length: 5 }, () => Math.floor(Math.random() * 100)), label: 'Disruption' },
+        ],
+        xAxis: [{ data: ['Permanent Closure', 'Travel Delays', 'Directional Closure', 'Total Closure', 'Increased Travel Time'], scaleType: 'band' }],
+    }
+    return mockData;
+    // return axios.get(`${BACKEND_BASE_URL}/disruption-impact-distribution`);
 }
 
 export function getTrafficJamsTrend(period: string): Promise<LineChartData> {

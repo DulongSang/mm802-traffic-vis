@@ -11,6 +11,10 @@
 npm install
 ```
 
+### Change Configs
+
+Go to `src/config.ts` change the configs if necessary.
+
 ## React Scripts
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
