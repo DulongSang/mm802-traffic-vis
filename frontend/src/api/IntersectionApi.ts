@@ -68,3 +68,9 @@ export function getPredictedVolume(intersectionId: string): Promise<number> {
     return Promise.resolve(mockValue);
     // return axios.get(`${BACKEND_BASE_URL}/intersection/${intersectionId}/predicted-volume`);
 }
+
+export function getCameraRTSP(intersectionId: string, objectTracking: boolean): Promise<string> {
+    const mockValue = 'rtsp://';
+    return Promise.resolve(mockValue);
+    // return axios.get(`${BACKEND_BASE_URL}/intersection/${intersectionId}/camera-rtsp?objectTracking=${objectTracking}`);
+}

@@ -18,7 +18,7 @@ import { fromLonLat } from 'ol/proj';
 import { OSM, Vector as VectorSource } from 'ol/source';
 import { Icon, Style } from 'ol/style.js';
 
-import mockTopDownView from '../assets/intersection-topdown-view.png'
+import mockTopDownView from '../assets/intersection-topdown-view.jpg'
 
 import { SidebarComponent, SidebarItem } from '../components/SidebarComponent';
 import { SingleValueCard } from '../components/dashboard/SingleValueCard';
@@ -156,7 +156,7 @@ function MiniDashboard() {
 function IntersectionTopDownView() {
   return (
     <div>
-      <img src={mockTopDownView} alt="mock-top-down-view" />
+      <img src={mockTopDownView} alt="mock-top-down-view" width={550} height={550} />
     </div>
   );
 }
@@ -211,7 +211,7 @@ function IntersectionMiniMap() {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
       <div style={{ textAlign: 'center', fontSize: '24px', marginBottom: '12px' }}>Location: <span style={{ fontWeight: 'bold' }}>{coordinate?.toString()}</span></div>
-      <div ref={mapElement} style={{ height: '500px', width: '500px' }}></div>
+      <div ref={mapElement} style={{ height: '500px', width: '600px' }}></div>
     </div>
   );
 }
