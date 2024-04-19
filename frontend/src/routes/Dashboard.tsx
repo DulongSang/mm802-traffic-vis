@@ -8,11 +8,12 @@ import {
 } from '@mui/icons-material';
 
 import { SidebarComponent, SidebarItem } from '../components/SidebarComponent';
+import { BarChartCard } from '../components/dashboard/BarChartCard';
 import { LineChartCard } from '../components/dashboard/LineChartCard';
 import { SingleValueCard } from '../components/dashboard/SingleValueCard';
 import { 
   getTrafficIndex, getTotalDisruption, getTrafficJams,
-  getTrafficIndexTrend, getTotalDisruptionTrend, getTrafficJamsTrend,
+  getTrafficIndexTrend, getDisruptionImpactDistribution, getTrafficJamsTrend,
 } from '../api/TrafficApi';
 
 export function Dashboard() {
@@ -79,11 +80,11 @@ function DashboardContent() {
           />
         </Grid>
         <Grid item xs={1}>
-          <LineChartCard
-            title="Disruption Trend"
-            colors={['#f37515']}
+          <BarChartCard
+            title="Traffic Disruption"
             chartBackgroundColor="#ffdbbf"
-            fetchData={getTotalDisruptionTrend}
+            chartHeight={515}
+            fetchData={getDisruptionImpactDistribution}
           />
         </Grid>
         <Grid item xs={1}>

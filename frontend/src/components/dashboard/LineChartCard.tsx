@@ -37,7 +37,8 @@ export function LineChartCard(props: LineChartCardProps) {
 
   return (
     <Paper square={false} style={{ borderRadius: '12px', padding: '12px' }}>
-      <Paper style={{ width: '100%', backgroundColor: chartBackgroundColor }}>
+      <h3 style={{ marginTop: 0 }}>{title}</h3>
+      <Paper style={{ width: '100%', backgroundColor: chartBackgroundColor, marginBottom: '12px' }}>
         <LineChart
           series={data.series}
           xAxis={data.xAxis}
@@ -46,7 +47,6 @@ export function LineChartCard(props: LineChartCardProps) {
           grid={{ horizontal: true }}
         />
       </Paper>
-      <h3>{title}</h3>
       <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
         <InputLabel>Period</InputLabel>
         <Select
