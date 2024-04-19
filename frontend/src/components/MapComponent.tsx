@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import 'ol/ol.css';
 import { Map, View, Feature } from 'ol';
 import Point from 'ol/geom/Point';
@@ -8,11 +8,17 @@ import { fromLonLat } from 'ol/proj';
 import { OSM, Vector as VectorSource } from 'ol/source';
 import { Icon, Style } from 'ol/style.js';
 
-import { CameraLocation } from '../types/MapData';
+import { listCameras } from '../api/MapApi';
+import { CameraInfo } from '../types/MapData';
 
 
-export function MapComponent(props: MapProps) {
-  const { cameraLocations } = props;
+export function MapComponent() {
+  const [cameras, setCameras] = useState<CameraInfo[]>([]);
+  useEffect(() => {
+    listCameras().then((cameras) => {
+      setCameras(cameras);
+    });
+  }, []);
 
   const mapElement = useRef<HTMLDivElement>(null);
 
@@ -21,10 +27,10 @@ export function MapComponent(props: MapProps) {
 
     const markerLayer = new VectorLayer({
       source: new VectorSource({
-        features: cameraLocations.map((location) => new Feature({
-          geometry: new Point(fromLonLat(location.coordinate)),
-          id: location.id,
-          name: location.name,
+        features: cameras.map((cameraInfo) => new Feature({
+          geometry: new Point(fromLonLat(cameraInfo.coordinate)),
+          id: cameraInfo.id,
+          name: cameraInfo.name,
         })),
       }),
       style: new Style({
@@ -62,13 +68,9 @@ export function MapComponent(props: MapProps) {
     map.addInteraction(select);
 
     return () => map.setTarget(undefined);
-  }, [cameraLocations]);
+  }, [cameras]);
 
   return (
     <div ref={mapElement} style={{ height: '100%', width: '100%' }}></div>
   );
-};
-
-export type MapProps = {
-  cameraLocations: CameraLocation[],
 };

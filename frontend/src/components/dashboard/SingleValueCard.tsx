@@ -2,23 +2,44 @@ import { useState, useEffect } from 'react';
 import { Divider, FormControl, InputLabel, MenuItem, Paper, Select } from '@mui/material';
 import AnimatedNumber from "react-animated-numbers";
 
+const PERIOD_TO_MS = {
+  "last hour": 60 * 60 * 1000,
+  "yesterday": 24 * 60 * 60 * 1000,
+  "last week": 7 * 24 * 60 * 60 * 1000,
+  "last month": 30 * 24 * 60 * 60 * 1000,
+  "last year": 365 * 24 * 60 * 60 * 1000,
+};
 
 export function SingleValueCard(props: SingleValueCardProps) {
-  const { title, value, icon, iconColor, iconBackgroundColor, updatePercentage, updatePeriod, valueTextColor } = props;
+  const { title, icon, iconColor, iconBackgroundColor, autoUpdateMs, fetchValue } = props;
 
-  const [curValue, setCurValue] = useState(value);
-  const [period, setPeriod] = useState(updatePeriod);
-  const [percentage, setPercentage] = useState(updatePercentage);
+  const [curValue, setCurValue] = useState<number>(0);
+  const [prevValue, setPrevValue] = useState<number>(0);
+  const [deltaPercentage, setDeltaPercentage] = useState<number>(0);
+  const [period, setPeriod] = useState<keyof typeof PERIOD_TO_MS>("last hour");
+
+  // Auto update
+  useEffect(() => {
+    if (autoUpdateMs <= 0) {
+      return;
+    }
+    
+    const interval = setInterval(() => {
+      fetchValue(new Date()).then((value) => {
+        setCurValue(value);
+        setDeltaPercentage(((value - prevValue) / prevValue) * 100);
+      });
+    }, autoUpdateMs);
+    return () => clearInterval(interval);
+  }, []);
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      const change = Math.floor(Math.random() * 10) - 5;
-      setCurValue(curValue + change);
-      setPercentage(percentage + change);
-    }, Math.floor(Math.random() * 5000) + 10000);
-    return () => clearInterval(interval);
-  }, [curValue, percentage]);
-
+    fetchValue(new Date(Date.now() - PERIOD_TO_MS[period])).then((value) => {
+      setPrevValue(value);
+      setDeltaPercentage(((curValue - value) / value) * 100);
+    });
+  }, [period]);
+  
   return (
     <Paper square={false} style={{ position: 'relative', padding: '12px', marginTop: '16px', borderRadius: '12px' }}>
       <Paper
@@ -31,7 +52,7 @@ export function SingleValueCard(props: SingleValueCardProps) {
           <div style={{ fontSize: '24px', color: 'gray' }}>{title}</div>
           <div style={{ float: 'right' }}>
             <AnimatedNumber
-              fontStyle={{ fontSize: '40px', color: valueTextColor, fontWeight: 'bold' }}
+              fontStyle={{ fontSize: '40px', fontWeight: 'bold' }}
               includeComma
               transitions={(index) => ({
                 type: "spring",
@@ -45,8 +66,8 @@ export function SingleValueCard(props: SingleValueCardProps) {
       <Divider style={{ marginTop: '12px' }} />
       <div style={{ display: 'flex', justifyContent: 'space-between', padding: '10px' }}>
         <div style={{ display: 'flex', alignItems: 'center' }}>
-          <span style={{ color: percentage > 0 ? 'green' : 'red', fontWeight: 'bold' }}>
-            {percentage > 0 ? `+${percentage}` : percentage}%
+          <span style={{ color: deltaPercentage > 0 ? 'green' : 'red', fontWeight: 'bold' }}>
+            {deltaPercentage > 0 ? `+${deltaPercentage}` : deltaPercentage}%
           </span>
           <span style={{ margin: '0 8px' }}>than</span>
           <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
@@ -54,17 +75,11 @@ export function SingleValueCard(props: SingleValueCardProps) {
             <Select
               value={period}
               label="Period"
-              onChange={(event) => {
-                setPeriod(event.target.value);
-                setCurValue(Math.floor(Math.random() * 100));
-                setPercentage(Math.floor(Math.random() * 40) - 20);
-              }}
+              onChange={(event) => setPeriod(event.target.value as keyof typeof PERIOD_TO_MS)}
             >
-              <MenuItem value={"last hour"}>last hour</MenuItem>
-              <MenuItem value={"yesterday"}>yesterday</MenuItem>
-              <MenuItem value={"last week"}>last week</MenuItem>
-              <MenuItem value={"last month"}>last month</MenuItem>
-              <MenuItem value={"last year"}>last year</MenuItem>
+              {Object.keys(PERIOD_TO_MS).map((period) => (
+                <MenuItem key={period} value={period}>{period}</MenuItem>
+              ))}
             </Select>
           </FormControl>
         </div>
@@ -75,11 +90,9 @@ export function SingleValueCard(props: SingleValueCardProps) {
 
 export type SingleValueCardProps = {
   title: string,
-  value: number,
   icon: JSX.Element,
   iconColor: string,
   iconBackgroundColor: string,
-  updatePercentage: number,
-  updatePeriod: string,
-  valueTextColor?: string,
+  autoUpdateMs: number,
+  fetchValue: (datetime: Date) => Promise<number>,
 };

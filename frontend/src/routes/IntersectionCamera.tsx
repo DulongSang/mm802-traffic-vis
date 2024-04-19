@@ -22,7 +22,8 @@ import mockTopDownView from '../assets/intersection-topdown-view.png'
 import { SidebarComponent, SidebarItem } from '../components/SidebarComponent';
 import { SingleValueCard } from '../components/dashboard/SingleValueCard';
 import { LineChartCard } from '../components/dashboard/LineChartCard';
-
+import { getVehicleCount, getTrafficIndex, getVehicleCountTrend, getTrafficIndexTrend } from '../api/IntersectionApi';
+import { getCameraInfo } from '../api/MapApi';
 
 export function IntersectionCamera() {
   const { id } = useParams<{ id: string }>();
@@ -83,7 +84,7 @@ function IntersectionCameraContent() {
     <div>
       <Grid container columns={7} spacing={2}>
         <Grid item xs={2}>
-          <IntersectionMiniMap coordinate={[-113.4938, 53.5461]} />
+          <IntersectionMiniMap />
         </Grid>
         <Grid item xs={3}>
           <FormControlLabel control={
@@ -103,26 +104,33 @@ function IntersectionCameraContent() {
 }
 
 function MiniDashboard() {
-  const mockData = [85, 70, 64, 50, 78, 55, 89, 68, 77, 36];
-  const mockTimeStamp = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+  const { id } = useParams<{ id: string }>();
 
   return (
     <Grid container columns={2} spacing={2} style={{ marginTop: '12px', paddingRight: '12px' }}>
       <Grid item xs={1}>
         <SingleValueCard
-          title="Vehicle Count" value={36} updatePercentage={10} updatePeriod='last hour'
-          icon={<CarIcon fontSize='large' />} iconColor='white' iconBackgroundColor='#1976d2' />
+          title="Vehicle Count" icon={<CarIcon fontSize='large' />} iconColor='white' iconBackgroundColor='#1976d2'
+          fetchValue={(datetime: Date) => getVehicleCount(id!, datetime)} autoUpdateMs={60000}
+        />
       </Grid>
       <Grid item xs={1}>
         <SingleValueCard
-          title="Traffic Index" value={11} updatePercentage={10} updatePeriod='last hour'
-          icon={<TrafficIcon fontSize='large' />} iconColor='white' iconBackgroundColor='#4bd400' />
+          title="Traffic Index" icon={<TrafficIcon fontSize='large' />} iconColor='white' iconBackgroundColor='#4bd400'
+          fetchValue={(datetime: Date) => getTrafficIndex(id!, datetime)} autoUpdateMs={60000}
+        />
       </Grid>
       <Grid item xs={1}>
-        <LineChartCard title="Vehicle Count" series={[{ data: mockData }]} xAxis={[{ data: mockTimeStamp }]} chartHeight={170} colors={['#1976d2']} chartBackgroundColor='#cce6ff' />
+        <LineChartCard 
+          title="Vehicle Count" chartHeight={170} colors={['#1976d2']} chartBackgroundColor='#cce6ff'
+          fetchData={(period) => getVehicleCountTrend(id!, period)}
+        />
       </Grid>
       <Grid item xs={1}>
-        <LineChartCard title="Traffic Index" series={[{ data: mockData }]} xAxis={[{ data: mockTimeStamp }]} chartHeight={170} colors={['#4bd400']} chartBackgroundColor='#d9ffe0' />
+        <LineChartCard
+          title="Traffic Index" chartHeight={170} colors={['#4bd400']} chartBackgroundColor='#d9ffe0'
+          fetchData={(period) => getTrafficIndexTrend(id!, period)}
+        />
       </Grid>
     </Grid>
   );
@@ -137,14 +145,19 @@ function IntersectionTopDownView() {
 }
 
 
-function IntersectionMiniMap(props: { coordinate: [number, number] }) {
+function IntersectionMiniMap() {
+  const { id } = useParams<{ id: string }>();
   const mapElement = useRef<HTMLDivElement>(null);
 
-  const { coordinate } = props;
+  const [coordinate, setCoordinate] = useState<[number, number] | null>(null);
+  useEffect(() => {
+    getCameraInfo(id!).then((cameraInfo) => {
+      setCoordinate(cameraInfo.coordinate);
+    });
+  }, [id]);
 
   useEffect(() => {
-    if (!mapElement.current) return;
-    console.log("hello");
+    if (!mapElement.current || !coordinate) return;
 
     const markerLayer = new VectorLayer({
       source: new VectorSource({
@@ -161,7 +174,6 @@ function IntersectionMiniMap(props: { coordinate: [number, number] }) {
       }),
     });
 
-    const edmontonCoords = fromLonLat([-113.4938, 53.5461]);
     const map = new Map({
       target: mapElement.current,
       layers: [
@@ -171,17 +183,17 @@ function IntersectionMiniMap(props: { coordinate: [number, number] }) {
         markerLayer,
       ],
       view: new View({
-        center: edmontonCoords,
+        center: fromLonLat(coordinate),
         zoom: 18,
       }),
     });
 
     return () => map.setTarget(undefined);
-  }, []);
+  }, [coordinate]);
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-      <div style={{ textAlign: 'center', fontSize: '24px', marginBottom: '12px' }}>Location: <span style={{ fontWeight: 'bold' }}>{coordinate.toString()}</span></div>
+      <div style={{ textAlign: 'center', fontSize: '24px', marginBottom: '12px' }}>Location: <span style={{ fontWeight: 'bold' }}>{coordinate?.toString()}</span></div>
       <div ref={mapElement} style={{ height: '500px', width: '500px' }}></div>
     </div>
   );

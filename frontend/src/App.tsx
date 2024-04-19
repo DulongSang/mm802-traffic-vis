@@ -4,13 +4,12 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { Dashboard } from './routes/Dashboard';
 import { IntersectionCamera } from './routes/IntersectionCamera';
 import { MapView } from './routes/MapView';
-import { Welcome } from './routes/Welcome';
 
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Welcome />,
+    element: <MapView />,
   },
   {
     path: "/map-view",

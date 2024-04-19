@@ -1,19 +1,46 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Divider, FormControl, InputLabel, MenuItem, Paper, Select } from '@mui/material';
 import { Update as UpdateIcon } from '@mui/icons-material';
 import { LineChart } from '@mui/x-charts/LineChart';
 
-export function LineChartCard(props: LineChartCardProps) {
-  const { series, xAxis, title, colors, chartBackgroundColor, chartHeight } = props;
+export type LineChartData = {
+  series: {
+    data: (number | null)[],
+    label?: string,
+  }[],
+  xAxis: {
+    data: number[] | string[],
+  }[],
+};
 
-  const [period, setPeriod] = useState("last 24 hour");
+const PERIOD_OPTIONS = [
+  "last 24 hour",
+  "last week",
+  "last month",
+  "last year",
+];
+
+export function LineChartCard(props: LineChartCardProps) {
+  const { title, fetchData, colors, chartBackgroundColor, chartHeight } = props;
+
+  const [period, setPeriod] = useState<typeof PERIOD_OPTIONS[number]>("last 24 hour");
+  const [data, setData] = useState<LineChartData>({
+    series: [],
+    xAxis: [],
+  });
+
+  useEffect(() => {
+    fetchData(period).then((data) => {
+      setData(data);
+    });
+  }, [period]);
 
   return (
     <Paper square={false} style={{ borderRadius: '12px', padding: '12px' }}>
       <Paper style={{ width: '100%', backgroundColor: chartBackgroundColor }}>
         <LineChart
-          series={series}
-          xAxis={xAxis}
+          series={data.series}
+          xAxis={data.xAxis}
           height={chartHeight ?? 400}
           colors={colors}
           grid={{ horizontal: true }}
@@ -29,10 +56,9 @@ export function LineChartCard(props: LineChartCardProps) {
             setPeriod(event.target.value);
           }}
         >
-          <MenuItem value={"last 24 hour"}>last 24 hour</MenuItem>
-          <MenuItem value={"last week"}>last week</MenuItem>
-          <MenuItem value={"last month"}>last month</MenuItem>
-          <MenuItem value={"last year"}>last year</MenuItem>
+          {PERIOD_OPTIONS.map((option) => (
+            <MenuItem key={option} value={option}>{option}</MenuItem>
+          ))}
         </Select>
       </FormControl>
       <Divider style={{ margin: '10px 0'}} />
@@ -45,15 +71,8 @@ export function LineChartCard(props: LineChartCardProps) {
 }
 
 export type LineChartCardProps = {
-  series: {
-    data: (number | null)[],
-    label?: string,
-  }[],
-  xAxis: {
-    data: number[] | string[],
-    scaleType?: 'point'
-  }[],
   title: string,
+  fetchData(period: string): Promise<LineChartData>,
   colors?: string[],
   chartBackgroundColor?: string,
   chartHeight?: number,

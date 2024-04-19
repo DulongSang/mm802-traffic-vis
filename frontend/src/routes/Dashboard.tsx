@@ -10,6 +10,10 @@ import {
 import { SidebarComponent, SidebarItem } from '../components/SidebarComponent';
 import { LineChartCard } from '../components/dashboard/LineChartCard';
 import { SingleValueCard } from '../components/dashboard/SingleValueCard';
+import { 
+  getTrafficIndex, getTotalDisruption, getTrafficJams,
+  getTrafficIndexTrend, getTotalDisruptionTrend, getTrafficJamsTrend,
+} from '../api/TrafficApi';
 
 export function Dashboard() {
   const sidebarItems: SidebarItem[] = [
@@ -38,62 +42,56 @@ function DashboardContent() {
         <Grid item xs={1}>
           <SingleValueCard
             title="Overall Traffic Index"
-            value={3}
             icon={<TrafficIcon fontSize='large' />}
             iconBackgroundColor="#2ea043"
             iconColor="white"
-            updatePercentage={23}
-            updatePeriod="last month"
+            autoUpdateMs={60000}
+            fetchValue={getTrafficIndex}
           />
         </Grid>
         <Grid item xs={1}>
           <SingleValueCard
             title="Total Disruption"
-            value={16}
             icon={<DangerousIcon fontSize='large' />}
             iconBackgroundColor="#f37515"
             iconColor="white"
-            updatePercentage={-5}
-            updatePeriod="last month"
+            autoUpdateMs={60000}
+            fetchValue={getTotalDisruption}
           />
         </Grid>
         <Grid item xs={1}>
           <SingleValueCard
             title="Traffic Jams"
-            value={3}
             icon={<MinorCrashIcon fontSize='large' />}
             iconBackgroundColor="#e41400"
             iconColor="white"
-            updatePercentage={12}
-            updatePeriod="yesterday"
+            autoUpdateMs={60000}
+            fetchValue={getTrafficJams}
           />
         </Grid>
 
         <Grid item xs={1}>
           <LineChartCard
-            series={[{ data: [5, 2, 4, 1, 6, 7, 9, 3, 8, 10] }]}
-            xAxis={[{ data: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] }]}
-            title="Traffic Index History"
+            title="Traffic Index Trend"
             colors={['#19bf38']}
             chartBackgroundColor="#d9ffe0"
+            fetchData={getTrafficIndexTrend}
           />
         </Grid>
         <Grid item xs={1}>
           <LineChartCard
-            series={[{ data: [5, 2, 4, 1, 6, 7, 9, 3, 8, 10] }]}
-            xAxis={[{ data: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] }]}
-            title="Disruption History"
+            title="Disruption Trend"
             colors={['#f37515']}
             chartBackgroundColor="#ffdbbf"
+            fetchData={getTotalDisruptionTrend}
           />
         </Grid>
         <Grid item xs={1}>
           <LineChartCard
-            series={[{ data: [5, 2, 4, 1, 6, 7, 9, 3, 8, 10] }]}
-            xAxis={[{ data: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] }]}
-            title="Traffic Jams History"
+            title="Traffic Jams Trend"
             colors={['#e41400']}
             chartBackgroundColor="#ffccc7"
+            fetchData={getTrafficJamsTrend}
           />
         </Grid>
       </Grid>
