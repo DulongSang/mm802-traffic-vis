@@ -13,5 +13,5 @@ export type TrafficDisruption = {
     activity_type: string,
     traffic_district: string,
     infrastructure: string,
-    coordinates: [number, number],
+    coordinate: [lon: number, lat: number],
 };

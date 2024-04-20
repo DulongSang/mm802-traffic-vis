@@ -6,17 +6,25 @@ import Select from 'ol/interaction/Select';
 import { Tile as TileLayer, Vector as VectorLayer } from 'ol/layer';
 import { fromLonLat } from 'ol/proj';
 import { OSM, Vector as VectorSource } from 'ol/source';
-import { Icon, Style } from 'ol/style.js';
+import { Circle as CircleStyle, Fill, Icon, Style } from 'ol/style.js';
 
 import { listCameras } from '../api/MapApi';
+import { listTrafficDisruptions } from '../api/TrafficApi';
 import { CameraInfo } from '../types/MapData';
+import { TrafficDisruption } from '../types/TrafficDisruption';
 
 
 export function MapComponent() {
   const [cameras, setCameras] = useState<CameraInfo[]>([]);
+  const [disruptions, setDisruptions] = useState<TrafficDisruption[]>([]);
   useEffect(() => {
     listCameras().then((cameras) => {
       setCameras(cameras);
+    });
+  }, []);
+  useEffect(() => {
+    listTrafficDisruptions().then((disruptions) => {
+      setDisruptions(disruptions);
     });
   }, []);
 
@@ -25,7 +33,7 @@ export function MapComponent() {
   useEffect(() => {
     if (!mapElement.current) return;
 
-    const markerLayer = new VectorLayer({
+    const cameraLayer = new VectorLayer({
       source: new VectorSource({
         features: cameras.map((cameraInfo) => new Feature({
           geometry: new Point(fromLonLat(cameraInfo.coordinate)),
@@ -40,8 +48,26 @@ export function MapComponent() {
       }),
     });
 
+    const disruptionLayer = new VectorLayer({
+      source: new VectorSource({
+        features: disruptions.map((disruption) => new Feature({
+          geometry: new Point(fromLonLat(disruption.coordinate)),
+          id: disruption.disruption_id,
+          name: disruption.description,
+        })),
+      }),
+      style: new Style({
+        image: new CircleStyle({
+          radius: 5,
+          fill: new Fill({
+            color: '#f0c34c',
+          }),
+        })
+      }),
+    });
+
     const select = new Select({
-      layers: [markerLayer],
+      layers: [cameraLayer],
     });
     select.on('select', (event) => {
       const feature = event.selected[0];
@@ -55,7 +81,8 @@ export function MapComponent() {
         new TileLayer({
           source: new OSM(),
         }),
-        markerLayer,
+        disruptionLayer,
+        cameraLayer,
       ],
       view: new View({
         center: edmontonCoords,
@@ -68,7 +95,7 @@ export function MapComponent() {
     map.addInteraction(select);
 
     return () => map.setTarget(undefined);
-  }, [cameras]);
+  }, [cameras, disruptions]);
 
   return (
     <div ref={mapElement} style={{ height: '100%', width: '100%' }}></div>
