@@ -1,0 +1,17 @@
+export type TrafficDisruption = {
+    id: number,
+    disruption_id: string,
+    status: string,
+    closure: string,
+    on_street: string,
+    impact: string,
+    start_date: string,
+    finish_date: string,
+    progress: number,
+    details: string,
+    description: string,
+    activity_type: string,
+    traffic_district: string,
+    infrastructure: string,
+    coordinates: [number, number],
+};
