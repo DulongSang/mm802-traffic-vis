@@ -14,6 +14,10 @@ Please refer to [`frontend/README.md`](frontend/README.md).
 Please refer to [`backend/README.md`](backend/README.md).
 
 
+## Machine Learning `ml`
+Please refer to [`ml/README.md`](ml/README.md).
+
+
 ## Contribution Guidelines
 
 ### Commit
