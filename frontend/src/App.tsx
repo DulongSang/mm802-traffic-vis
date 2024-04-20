@@ -5,6 +5,7 @@ import { Dashboard } from './routes/Dashboard';
 import { IntersectionCamera } from './routes/IntersectionCamera';
 import { IntersectionDashboard } from './routes/IntersectionDashboard';
 import { MapView } from './routes/MapView';
+import { TrafficDisruptionTable } from './routes/TrafficDisruptionTable';
 
 
 const router = createBrowserRouter([
@@ -19,6 +20,10 @@ const router = createBrowserRouter([
   {
     path: "/dashboard",
     element: <Dashboard />,
+  },
+  {
+    path: "/disruptions",
+    element: <TrafficDisruptionTable />,
   },
   {
     path: "/intersection/camera/:id",

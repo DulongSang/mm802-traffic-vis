@@ -1,5 +1,5 @@
 import { Grid } from '@mui/material';
-import { Map as MapIcon, Dashboard as DashboardIcon } from '@mui/icons-material';
+import { Map as MapIcon, Dashboard as DashboardIcon, Warning as WarningIcon } from '@mui/icons-material';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 
@@ -11,6 +11,7 @@ export function MapView() {
   const sidebarItems: SidebarItem[] = [
     { title: 'Map View', icon: <MapIcon />, href: '/map-view' },
     { title: 'Dashboard', icon: <DashboardIcon />, href: '/dashboard' },
+    { title: 'Traffic Disruptions', icon: <WarningIcon />, href: '/disruptions'},
   ];
 
   return (

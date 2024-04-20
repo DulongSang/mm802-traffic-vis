@@ -5,6 +5,7 @@ import {
   Dashboard as DashboardIcon,
   MinorCrash as MinorCrashIcon,
   Traffic as TrafficIcon,
+  Warning as WarningIcon,
 } from '@mui/icons-material';
 
 import { SidebarComponent, SidebarItem } from '../components/SidebarComponent';
@@ -20,6 +21,7 @@ export function Dashboard() {
   const sidebarItems: SidebarItem[] = [
     { title: 'Map View', icon: <MapIcon />, href: '/map-view' },
     { title: 'Dashboard', icon: <DashboardIcon />, href: '/dashboard' },
+    { title: 'Traffic Disruptions', icon: <WarningIcon />, href: '/disruptions'},
   ];
 
   return (
