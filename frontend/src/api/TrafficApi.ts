@@ -81,7 +81,7 @@ export async function listTrafficDisruptions(): Promise<TrafficDisruption[]> {
         activity_type: item.activity_type,
         traffic_district: item.traffic_district,
         infrastructure: item.infrastructure,
-        coordinates: [item.point.longitude, item.point.latitude],
+        coordinate: item.point.coordinates,
     }));
     return disruptions;
 }
